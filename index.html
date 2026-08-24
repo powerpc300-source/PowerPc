@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power PC | PC's y Repuestos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- CANVAS DE FONDO EN MOVIMIENTO -->
+  <canvas id="tech-bg"></canvas>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <img src="logo.png" alt="Power PC Logo" onerror="this.style.display='none'">
+      <div class="brand-text">
+        <h1>POWER PC</h1>
+        <p>PC'S Y REPUESTOS</p>
+      </div>
+    </div>
+    <div class="cart-btn-container">
+      <button class="cart-toggle-btn" id="cartToggle">
+        🛒 Carrito <span class="cart-badge" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+    <!-- CATEGORÍAS -->
+    <nav class="categories-nav">
+      <button class="cat-btn active" data-category="pc">Computadoras (PC)</button>
+      <button class="cat-btn" data-category="laptop">Laptops</button>
+      <button class="cat-btn" data-category="repuestos_laptop">Repuestos Laptop</button>
+      <button class="cat-btn" data-category="perifericos">Periféricos</button>
+      <button class="cat-btn" data-category="cargadores">Cargadores</button>
+      <button class="cat-btn" data-category="herramientas">Herramientas</button>
+      <button class="cat-btn" data-category="videojuegos">Videojuegos</button>
+    </nav>
+
+    <!-- REJILLA DE PRODUCTOS -->
+    <section class="catalog-grid" id="catalogGrid">
+      <!-- Los productos se generan mediante JS -->
+    </section>
+  </main>
+
+  <!-- DRAWER DEL CARRITO -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>Tu Carrito</h2>
+      <button class="cart-close-btn" id="cartClose">&times;</button>
+    </div>
+    <div class="cart-items-list" id="cartItems">
+      <!-- Items agregados van aquí -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cartTotalSum">$0.00</span>
+      </div>
+      <button class="send-whatsapp-btn" id="sendWhatsapp">
+        Enviar Pedido a WhatsApp
+      </button>
+    </div>
+  </aside>
+
+  <footer>
+    <p>&copy; 2026 Power PC - Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
