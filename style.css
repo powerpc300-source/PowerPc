@@ -99,7 +99,7 @@ input[type="radio"] {
     animation: fadeIn 0.4s ease-in-out;
 }
 
-/* Mostrar la sección correspondiente al radio seleccionado */
+/* Mostrar únicamente la sección seleccionada */
 #cat-inicio:checked ~ .main-wrapper .sec-inicio,
 #cat-laptops:checked ~ .main-wrapper .sec-laptops,
 #cat-cargadores:checked ~ .main-wrapper .sec-cargadores,
