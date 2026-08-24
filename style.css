@@ -1,0 +1,358 @@
+/* Estilos Generales y Reseteo */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #0d1322;
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+/* Ocultar las entradas radio que controlan la vista */
+input[type="radio"] {
+    display: none;
+}
+
+/* Encabezado / Menú Fijo */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(13, 19, 34, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5%;
+    border-bottom: 1px solid #1e293b;
+    z-index: 1000;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-img {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-text span {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #38bdf8;
+    letter-spacing: 1px;
+    line-height: 1.1;
+}
+
+.logo-text small {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 5px 0;
+}
+
+.nav-links::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-btn {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    padding: 5px 0;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.nav-btn:hover {
+    color: #38bdf8;
+}
+
+/* --- LÓGICA DE CONTROL SOLO CSS --- */
+
+/* Ocultar todas las secciones por defecto */
+.vista-seccion {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Mostrar la sección correspondiente al radio seleccionado */
+#cat-inicio:checked ~ .main-wrapper .sec-inicio,
+#cat-laptops:checked ~ .main-wrapper .sec-laptops,
+#cat-cargadores:checked ~ .main-wrapper .sec-cargadores,
+#cat-pcs:checked ~ .main-wrapper .sec-pcs,
+#cat-facturacion:checked ~ .main-wrapper .sec-facturacion,
+#cat-videojuegos:checked ~ .main-wrapper .sec-videojuegos,
+#cat-audifonos:checked ~ .main-wrapper .sec-audifonos,
+#cat-joysticks:checked ~ .main-wrapper .sec-joysticks,
+#cat-repuestos:checked ~ .main-wrapper .sec-repuestos {
+    display: block;
+}
+
+/* Resaltar la pestaña del menú seleccionada */
+#cat-inicio:checked ~ .header .btn-inicio,
+#cat-laptops:checked ~ .header .btn-laptops,
+#cat-cargadores:checked ~ .header .btn-cargadores,
+#cat-pcs:checked ~ .header .btn-pcs,
+#cat-facturacion:checked ~ .header .btn-facturacion,
+#cat-videojuegos:checked ~ .header .btn-videojuegos,
+#cat-audifonos:checked ~ .header .btn-audifonos,
+#cat-joysticks:checked ~ .header .btn-joysticks,
+#cat-repuestos:checked ~ .header .btn-repuestos {
+    color: #38bdf8;
+    border-bottom: 2px solid #38bdf8;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Banner Hero */
+.hero {
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: radial-gradient(circle at center, #1e2942 0%, #0d1322 100%);
+    padding: 0 20px;
+    margin-top: 60px;
+}
+
+.hero-logo {
+    width: 130px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4));
+}
+
+.hero-content h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 15px;
+    max-width: 800px;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    margin-bottom: 25px;
+}
+
+.btn-main {
+    background: #38bdf8;
+    color: #0f172a;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-block;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.btn-main:hover {
+    background: #0ea5e9;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* Contenedor y Tarjetas */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+}
+
+.category-section h2 {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    border-left: 4px solid #38bdf8;
+    padding-left: 10px;
+}
+
+.grid-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #151f32;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #24334d;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(56, 189, 248, 0.15);
+    border-color: #38bdf8;
+}
+
+.card-img {
+    height: 180px;
+    background: #0d1322;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #24334d;
+    overflow: hidden; /* Corta cualquier exceso de imagen */
+}
+
+/* Regla para ajustar las imágenes de las tarjetas */
+.card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen manteniendo su proporción */
+    transition: transform 0.3s ease;
+}
+
+/* Efecto de zoom suave al pasar el mouse */
+.card:hover .card-img img {
+    transform: scale(1.05);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-body h3 {
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.descripcion {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+.precio {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #38bdf8;
+    display: block;
+}
+
+/* Pie de Página */
+.footer {
+    background: #080c16;
+    border-top: 1px solid #1e293b;
+    padding: 40px 20px;
+    text-align: center;
+    position: relative;
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    height: 60px;
+    width: auto;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.quote {
+    font-style: italic;
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.copy {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* Botón de WhatsApp Flotante */
+.whatsapp-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25d366;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+    background: #20ba5a;
+    transform: scale(1.05);
+}
+
+/* Responsividad para móviles */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 20px;
+    }
+    .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+    .hero {
+        margin-top: 110px;
+        height: auto;
+        padding: 60px 20px;
+    }
+    .hero-content h1 {
+        display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    }
+    .hero-logo {
+        width: 100px;
+    }
+}
