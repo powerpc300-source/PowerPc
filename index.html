@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power PC | PC's y Repuestos El Salvador</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Radios invisibles para controlar el estado de navegación -->
+    <input type="radio" name="categoria" id="cat-inicio" checked>
+    <input type="radio" name="categoria" id="cat-laptops">
+    <input type="radio" name="categoria" id="cat-cargadores">
+    <input type="radio" name="categoria" id="cat-pcs">
+    <input type="radio" name="categoria" id="cat-facturacion">
+    <input type="radio" name="categoria" id="cat-videojuegos">
+    <input type="radio" name="categoria" id="cat-audifonos">
+    <input type="radio" name="categoria" id="cat-joysticks">
+    <input type="radio" name="categoria" id="cat-repuestos">
+
+    <!-- Encabezado y Navegación -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="logo.png" alt="Power PC Logo" class="logo-img">
+            <div class="logo-text">
+                <span>POWER PC</span>
+                <small>PC'S Y REPUESTOS</small>
+            </div>
+        </div>
+        <!-- Menú basado en labels que activan los radios -->
+        <nav class="nav-links">
+            <label for="cat-inicio" class="nav-btn btn-inicio">Inicio</label>
+            <label for="cat-laptops" class="nav-btn btn-laptops">Laptops</label>
+            <label for="cat-cargadores" class="nav-btn btn-cargadores">Cargadores</label>
+            <label for="cat-pcs" class="nav-btn btn-pcs">PCs Oficina</label>
+            <label for="cat-facturacion" class="nav-btn btn-facturacion">Facturación</label>
+            <label for="cat-videojuegos" class="nav-btn btn-videojuegos">Videojuegos</label>
+            <label for="cat-audifonos" class="nav-btn btn-audifonos">Audífonos</label>
+            <label for="cat-joysticks" class="nav-btn btn-joysticks">Joysticks</label>
+            <label for="cat-repuestos" class="nav-btn btn-repuestos">Repuestos</label>
+        </nav>
+    </header>
+
+    <!-- Contenedor General -->
+    <div class="main-wrapper">
+
+ <!-- Banner Hero (Solo visible en Inicio) -->
+<section class="hero vista-seccion sec-inicio">
+    <div class="hero-content" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+        <img src="logo.png" alt="Power PC" class="hero-logo">
+        <h1 style="text-align: center;">Tecnología de Alto Rendimiento al Mejor Precio</h1>
+        <p>Encuentra equipos, componentes y repuestos ideales para potenciar tu productividad y tus juegos.</p>
+        <label for="cat-laptops" class="btn-main">Ver Catálogo de Laptops</label>
+    </div>
+</section>
+
+       <!-- Contenedor de Productos -->
+        <main class="container">
+
+            <!-- Laptops -->
+            <section class="category-section vista-seccion sec-laptops">
+                <h2>💻 Laptops</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">Laptop</div>
+                        <div class="card-body">
+                            <h3>Laptop Gamer HP PAVILION</h3>
+                            <p class="descripcion">RYZEN 5, 16GB RAM, 256GB SSD, RTX 3060.</p>
+                            <span class="precio">$899.00</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img">Laptop</div>
+                        <div class="card-body">
+                            <h3>Ultrabook Slim 14"</h3>
+                            <p class="descripcion">Intel Core i5, 8GB RAM, 256GB SSD, ligera y elegante.</p>
+                            <span class="precio">$549.00</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="img/laptop/macbookair2015.jpg" alt="Macbook air 2015 13 pulgadas">
+                        </div>
+                        <div class="card-body">
+                            <h3>Macbook air 2015 13"</h3>
+                            <p class="descripcion">Intel Core i5, 4GB RAM, 120GB SSD, ligera y elegante.</p>
+                            <span class="precio">$150.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cargadores -->
+            <section class="category-section vista-seccion sec-cargadores">
+                <h2>🔌 Cargadores de Laptop</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">Cargador</div>
+                        <div class="card-body">
+                            <h3>Cargador Universal 65W</h3>
+                            <p class="descripcion">Compatible con múltiples marcas, protección contra sobrecarga.</p>
+                            <span class="precio">$25.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PCs de Oficina -->
+            <section class="category-section vista-seccion sec-pcs">
+                <h2>🖥️ PCs de Oficina</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">PC Oficina</div>
+                        <div class="card-body">
+                            <h3>PC Desktop Office Core</h3>
+                            <p class="descripcion">Intel Core i3 10ma Gen, 8GB RAM, SSD 240GB + Monitor 22".</p>
+                            <span class="precio">$380.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Facturación -->
+            <section class="category-section vista-seccion sec-facturacion">
+                <h2>🧾 Productos para Facturación Electrónica</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">POS / Impresora</div>
+                        <div class="card-body">
+                            <h3>Kit POS Térmico</h3>
+                            <p class="descripcion">Impresora de recibos térmica USB/Bluetooth + Lector de código de barras.</p>
+                            <span class="precio">$125.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Videojuegos -->
+            <section class="category-section vista-seccion sec-videojuegos">
+                <h2>🎮 Área de Videojuegos</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">Videojuego</div>
+                        <div class="card-body">
+                            <h3>Juego Físico PS5 / Xbox Series</h3>
+                            <p class="descripcion">Títulos AAA recientes disponibles. Consulta catálogo de estrenos.</p>
+                            <span class="precio">$59.99</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audífonos -->
+            <section class="category-section vista-seccion sec-audifonos">
+                <h2>🎧 Área de Audífonos</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">Audífonos</div>
+                        <div class="card-body">
+                            <h3>Audífonos Gamer RGB 7.1</h3>
+                            <p class="descripcion">Sonido envolvente, micrófono con cancelación de ruido y gran comodidad.</p>
+                            <span class="precio">$45.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Joysticks -->
+            <section class="category-section vista-seccion sec-joysticks">
+                <h2>🕹️ Área de Joystick de Juegos</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">Joystick</div>
+                        <div class="card-body">
+                            <h3>Mando Pro Inalámbrico</h3>
+                            <p class="descripcion">Compatible con PC, consolas y dispositivos móviles. Batería de larga duración.</p>
+                            <span class="precio">$35.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Repuestos -->
+            <section class="category-section vista-seccion sec-repuestos">
+                <h2>⚙️ Área de Repuestos de Laptop</h2>
+                <div class="grid-productos">
+                    <div class="card">
+                        <div class="card-img">Repuesto</div>
+                        <div class="card-body">
+                            <h3>Batería de Reemplazo</h3>
+                            <p class="descripcion">Modelos variados para HP, Dell, Lenovo y más. Alta durabilidad.</p>
+                            <span class="precio">$48.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Pie de Página -->
+    <footer class="footer">
+        <div class="footer-content">
+            <img src="logo.png" alt="Power PC Logo" class="footer-logo">
+            <p class="quote">"La tecnología nos conecta, la pasión nos impulsa a crear el futuro."</p>
+            <p class="copy">&copy; 2026 Power PC. Todos los derechos reservados.</p>
+        </div>
+        <a href="https://wa.me/50372541249?text=Hola,%20estoy%20interesado%20en%20los%20productos%20de%20Power%20PC" class="whatsapp-btn" target="_blank" title="Contáctanos por WhatsApp">
+            💬 ¡Escríbenos por WhatsApp!
+        </a>
+    </footer>
+
+</body>
+</html>
