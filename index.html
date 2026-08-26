@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Power PC | Tienda Digital</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDK (Compat Version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <!-- Encabezado con Logo y Carrito -->
+  <!-- ENCABEZADO / NAVBAR -->
   <header class="navbar">
     <div class="nav-container">
       <div class="brand">
-        <img src="img/logo.png" alt="Power PC Logo" class="brand-logo" onerror="this.style.display='none'">
+        <img src="img/logo.png" alt="Power PC Logo" id="logo-img" onerror="this.style.display='none'">
         <div class="brand-text">
           <h1>POWER <span>PC</span></h1>
           <p>PC's y Repuestos</p>
@@ -24,62 +27,54 @@
     </div>
   </header>
 
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="container">
     <section class="catalog-section">
-      <!-- Barra de Filtros Principales -->
-      <div class="filter-bar">
+      <!-- Barra de Categorías Principales -->
+      <div class="filter-bar" id="filter-bar">
         <span>Categorías:</span>
-        <button class="filter-btn active" onclick="filterProducts('Todos')">Todos</button>
-        <button class="filter-btn" onclick="filterProducts('Laptops')">Laptops</button>
-        <button class="filter-btn" onclick="filterProducts('CPUs')">CPUs</button>
-        <button class="filter-btn" onclick="filterProducts('Monitores')">Monitores</button>
-        <button class="filter-btn" onclick="filterProducts('Periféricos')">Periféricos</button>
-        <button class="filter-btn" onclick="filterProducts('Oficina')">Oficina</button>
-        <button class="filter-btn" onclick="filterProducts('Repuestos')">Repuestos</button>
-        <button class="filter-btn" onclick="filterProducts('UPS')">UPS</button>
-        <button class="filter-btn" onclick="filterProducts('Videojuegos')">Videojuegos</button>
+        <button class="filter-btn active" data-category="Todos">Todos</button>
+        <button class="filter-btn" data-category="Laptops">Laptops</button>
+        <button class="filter-btn" data-category="CPUs">CPUs</button>
+        <button class="filter-btn" data-category="Monitores">Monitores</button>
+        <button class="filter-btn" data-category="Periféricos">Periféricos</button>
+        <button class="filter-btn" data-category="Oficina">Oficina</button>
+        <button class="filter-btn" data-category="Repuestos">Repuestos</button>
+        <button class="filter-btn" data-category="UPS">UPS</button>
+        <button class="filter-btn" data-category="Videojuegos">Videojuegos</button>
       </div>
 
-      <!-- Subfiltros de Periféricos (Se ocultan/muestran automáticamente) -->
-      <!-- Subcategorías desplegables (Ocultas por defecto) -->
-<div class="subfilter-container hidden" id="subfilter-perifericos">
-  <label for="subcat-select">Subcategoría:</label>
-  <select id="subcat-select" class="subcat-dropdown" onchange="filterSubcategory(this.value)">
-    <option value="Todas">Todas las subcategorías</option>
-    <option value="Audífonos">Audífonos</option>
-    <option value="Teclados">Teclados</option>
-    <option value="Mouse">Mouse</option>
-    <option value="Bocinas">Bocinas</option>
-    <option value="Micrófonos">Micrófonos</option>
-  </select>
-</div>
+      <!-- Contenedor Dinámico de Subfiltros -->
+      <div class="subfilter-container hidden" id="subfilter-container">
+        <!-- Generado dinámicamente -->
+      </div>
 
-      <!-- Rejilla de Productos -->
-      <div id="product-grid" class="grid"></div>
+      <!-- Grilla de Catálogo -->
+      <div class="product-grid" id="product-grid">
+        <!-- Tarjetas dinámicas -->
+      </div>
     </section>
   </main>
 
-  <!-- Panel Lateral del Carrito -->
+  <!-- PANEL LATERAL DE CARRITO -->
   <div class="cart-overlay" id="cart-overlay"></div>
   <aside class="cart-sidebar" id="cart-sidebar">
     <div class="cart-header">
       <h2>Tu Carrito</h2>
-      <button class="close-cart" id="close-cart">&times;</button>
+      <button class="close-btn" id="close-cart">&times;</button>
     </div>
-    
-    <div class="cart-items" id="cart-items"></div>
-
+    <div class="cart-items" id="cart-items">
+      <p class="empty-msg">El carrito está vacío.</p>
+    </div>
     <div class="cart-footer">
       <div class="cart-total">
         <span>Total:</span>
         <span id="cart-total-price">$0.00</span>
       </div>
-      <button class="btn-whatsapp" id="send-whatsapp">
-        💬 Pedir por WhatsApp
-      </button>
+      <button class="btn-send-ws" id="btn-checkout-ws">Pedir por WhatsApp 💬</button>
     </div>
   </aside>
 
-  <script type="module" src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

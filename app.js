@@ -1,9 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Credenciales oficiales de tu proyecto PowerPC
+// ==========================================
+// CONFIGURACIÓN DE FIREBASE (powerpc-2fbdd)
+// ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyCz0fJ-P8fiSsWuaX8JdkDI2OZbDfTiQ5A",
+  apiKey: "AIzaSyCz0Fj-P8fiSsWuaX8JdkDI2OZbDfTiQ5A",
   authDomain: "powerpc-2fbdd.firebaseapp.com",
   projectId: "powerpc-2fbdd",
   storageBucket: "powerpc-2fbdd.firebasestorage.app",
@@ -11,112 +10,110 @@ const firebaseConfig = {
   appId: "1:255449627863:web:851e46f97ccea370eb4492"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const productsRef = collection(db, "productos");
+// Inicialización de Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
 
+// Número de WhatsApp para pedidos
+const WHATSAPP_NUMBER = "50370000000";
+
+// Variables de Estado
 let allProducts = [];
 let cart = [];
-let currentFilter = "Todos";
-let currentSubfilter = "Todas";
-const PHONE = "50372541249";
+let currentCategory = "Todos";
+let currentSubcategory = "Todas";
 
+// Elementos DOM
 const productGrid = document.getElementById("product-grid");
-const cartSidebar = document.getElementById("cart-sidebar");
+const filterBar = document.getElementById("filter-bar");
+const subfilterContainer = document.getElementById("subfilter-container");
+const cartTrigger = document.getElementById("cart-trigger");
 const cartOverlay = document.getElementById("cart-overlay");
+const cartSidebar = document.getElementById("cart-sidebar");
+const closeCartBtn = document.getElementById("close-cart");
 const cartItemsContainer = document.getElementById("cart-items");
 const cartCount = document.getElementById("cart-count");
 const cartTotalPrice = document.getElementById("cart-total-price");
+const btnCheckoutWs = document.getElementById("btn-checkout-ws");
 
-// Escuchar Firestore en tiempo real
-onSnapshot(productsRef, (snapshot) => {
-  allProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  renderProducts();
-});
-
-// Normalizador universal (remueve tildes, mayúsculas y espacios innecesarios)
-function cleanStr(str) {
-  if (str === null || str === undefined) return "";
-  return str
-    .toString()
-    .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
-
-// Obtiene un valor probando múltiples variaciones de nombres de clave con flexibilidad total
-function getValueByFlexibleKey(doc, possibleKeys) {
-  if (!doc) return "";
-  const docKeys = Object.keys(doc);
-  
-  for (const pKey of possibleKeys) {
-    const target = cleanStr(pKey);
-    const matchedKey = docKeys.find(k => cleanStr(k) === target);
-    if (matchedKey && doc[matchedKey] !== undefined && doc[matchedKey] !== null && doc[matchedKey] !== "") {
-      return doc[matchedKey];
+// ==========================================
+// LECTURA DE FIRESTORE (Busca en Productos y productos)
+// ==========================================
+function loadProducts() {
+  // Intentar primero con la colección "Productos" (Mayúscula)
+  db.collection("Productos").onSnapshot((snapshot) => {
+    if (!snapshot.empty) {
+      processDocs(snapshot.docs);
+    } else {
+      // Si está vacía, intentar con "productos" (Minúscula)
+      db.collection("productos").onSnapshot((snapshotMin) => {
+        processDocs(snapshotMin.docs);
+      });
     }
-  }
-  return "";
+  }, (error) => {
+    console.error("Error al obtener los productos:", error);
+  });
 }
 
-// Extractores globales insensibles a tildes y formato
-function getNombre(p) { return getValueByFlexibleKey(p, ["Nombre", "nombre", "title", "titulo", "item"]) || "Sin nombre"; }
-function getPrecio(p) { return getValueByFlexibleKey(p, ["Precio", "precio", "price", "costo", "monto"]) || 0; }
-function getCategoria(p) { return getValueByFlexibleKey(p, ["Categoria", "categoria", "categoría", "cat", "rubro"]); }
-function getSubcategoria(p) { return getValueByFlexibleKey(p, ["Subcategoria", "subcategoria", "Subcategoría", "subcategoría", "subcat"]); }
-function getImagen(p) { return getValueByFlexibleKey(p, ["Imagen", "imagen", "img", "foto", "url"]); }
-function getDescripcion(p) { return getValueByFlexibleKey(p, ["Descripción", "descripcion", "Descripcion", "desc", "detalle"]); }
+function processDocs(docs) {
+  allProducts = docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      nombre: data.Nombre || data.nombre || data.Title || data.title || "Producto sin nombre",
+      precio: parseFloat(data.Precio || data.precio || data.Price || data.price || 0),
+      categoria: data.Categoria || data.categoria || data.Category || data.category || "Otros",
+      subcategoria: data.Subcategoria || data.Subcategoría || data.subcategoria || data.subcategoría || "",
+      descripcion: data.Descripcion || data.descripcion || data.description || "",
+      imagen: data.Imagen || data.imagen || data.image || "https://via.placeholder.com/300x200?text=Power+PC"
+    };
+  });
+  renderCatalog();
+}
 
-// Renderizar tarjetas con tolerancia total a tildes y mayúsculas
-function renderProducts() {
-  productGrid.innerHTML = "";
-  
+// ==========================================
+// RENDERIZADO DEL CATÁLOGO
+// ==========================================
+function renderCatalog() {
   let filtered = allProducts;
-
-  // Filtrar por Categoría Principal (Aplica para Laptops, CPUs, Monitores, Periféricos, Oficina, etc.)
-  if (currentFilter !== "Todos") {
-    filtered = filtered.filter(p => {
-      const catVal = getCategoria(p);
-      return cleanStr(catVal) === cleanStr(currentFilter);
-    });
+  if (currentCategory !== "Todos") {
+    filtered = filtered.filter(p => p.categoria.toLowerCase() === currentCategory.toLowerCase());
   }
 
-  // Filtrar por Subcategoría (Aplica para Periféricos u otra categoría que maneje subniveles)
-  if (cleanStr(currentFilter) === "perifericos" && currentSubfilter !== "Todas") {
-    filtered = filtered.filter(p => {
-      const subcatVal = getSubcategoria(p);
-      return cleanStr(subcatVal) === cleanStr(currentSubfilter);
-    });
+  updateSubfilters(filtered);
+
+  if (currentSubcategory !== "Todas" && currentSubcategory !== "") {
+    filtered = filtered.filter(p => p.subcategoria.toLowerCase() === currentSubcategory.toLowerCase());
   }
 
+  productGrid.innerHTML = "";
   if (filtered.length === 0) {
-    productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-sub);">No hay productos registrados en esta sección.</p>`;
+    productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #94a3b8; padding: 40px;">No hay productos disponibles en esta categoría.</p>`;
     return;
   }
 
-  filtered.forEach(p => {
+  filtered.forEach((product) => {
     const card = document.createElement("div");
     card.className = "card";
-    
-    const nombre = getNombre(p);
-    const precio = getPrecio(p);
-    const catText = getCategoria(p);
-    const subText = getSubcategoria(p);
-    const badgeText = subText ? `${catText} • ${subText}` : catText;
-    const imgUrl = getImagen(p);
-    const descText = getDescripcion(p);
+
+    const badgeText = product.subcategoria 
+      ? `${product.categoria} • ${product.subcategoria}` 
+      : product.categoria;
 
     card.innerHTML = `
-      <img src="${imgUrl}" alt="${nombre}" onerror="this.src='https://via.placeholder.com/300x200?text=Power+PC'">
+      <div class="card-img-wrapper">
+        <img src="${product.imagen}" alt="${product.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=Power+PC'">
+      </div>
       <div class="card-body">
-        ${badgeText ? `<span class="badge">${badgeText}</span>` : ''}
-        <h3 class="card-title">${nombre}</h3>
-        <p class="price">$${parseFloat(precio || 0).toFixed(2)}</p>
-        <p class="card-desc">${descText}</p>
+        <span class="badge">${badgeText}</span>
+        <h3 class="card-title">${product.nombre}</h3>
+        <div class="price">$${product.precio.toFixed(2)}</div>
+        <p class="card-desc">${product.descripcion}</p>
         <div class="card-actions">
-          <button class="btn-add-cart" onclick="addToCart('${p.id}')">🛒 Agregar</button>
-          <button class="btn-direct-ws" onclick="directWhatsApp('${nombre}', ${precio})">💬 Consultar</button>
+          <button class="btn-add-cart" onclick="addToCart('${product.id}')">🛒 Agregar</button>
+          <button class="btn-direct-ws" onclick="consultDirect('${product.id}')">💬 Consultar</button>
         </div>
       </div>
     `;
@@ -124,110 +121,128 @@ function renderProducts() {
   });
 }
 
-// Lógica del Carrito
-window.addToCart = (id) => {
-  const item = allProducts.find(p => p.id === id);
+// ==========================================
+// SUBFILTROS DINÁMICOS
+// ==========================================
+function updateSubfilters(productsList) {
+  const subcats = [...new Set(productsList.map(p => p.subcategoria).filter(Boolean))];
+
+  if (subcats.length === 0 || currentCategory === "Todos") {
+    subfilterContainer.classList.add("hidden");
+    subfilterContainer.innerHTML = "";
+    currentSubcategory = "Todas";
+    return;
+  }
+
+  subfilterContainer.classList.remove("hidden");
+  let options = `<option value="Todas">Todas las subcategorías</option>`;
+  subcats.forEach(sub => {
+    options += `<option value="${sub}" ${sub === currentSubcategory ? "selected" : ""}>${sub}</option>`;
+  });
+
+  subfilterContainer.innerHTML = `
+    <select class="subfilter-select" id="subfilter-select">
+      ${options}
+    </select>
+  `;
+
+  document.getElementById("subfilter-select").addEventListener("change", (e) => {
+    currentSubcategory = e.target.value;
+    renderCatalog();
+  });
+}
+
+filterBar.addEventListener("click", (e) => {
+  if (e.target.classList.contains("filter-btn")) {
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+    e.target.classList.add("active");
+
+    currentCategory = e.target.getAttribute("data-category");
+    currentSubcategory = "Todas";
+    renderCatalog();
+  }
+});
+
+// ==========================================
+// CARRITO Y WHATSAPP
+// ==========================================
+function addToCart(productId) {
+  const item = allProducts.find(p => p.id === productId);
   if (item) {
     cart.push(item);
     updateCartUI();
     openCart();
   }
-};
-
-window.removeFromCart = (index) => {
-  cart.splice(index, 1);
-  updateCartUI();
-};
-
-function updateCartUI() {
-  cartCount.innerText = cart.length;
-  cartItemsContainer.innerHTML = "";
-  
-  let total = 0;
-  cart.forEach((item, index) => {
-    const nombre = getNombre(item);
-    const precio = getPrecio(item);
-    total += parseFloat(precio || 0);
-    
-    const div = document.createElement("div");
-    div.className = "cart-item";
-    div.innerHTML = `
-      <div>
-        <div class="cart-item-title">${nombre}</div>
-        <div class="cart-item-price">$${parseFloat(precio || 0).toFixed(2)}</div>
-      </div>
-      <button style="background:none; border:none; color:#ef4444; cursor:pointer;" onclick="removeFromCart(${index})">✕</button>
-    `;
-    cartItemsContainer.appendChild(div);
-  });
-
-  cartTotalPrice.innerText = `$${total.toFixed(2)}`;
 }
 
-// Enviar pedido completo a WhatsApp
-document.getElementById("send-whatsapp").addEventListener("click", () => {
-  if (cart.length === 0) return alert("Tu carrito está vacío.");
-  
-  let msg = "¡Hola Power PC! 👋 Deseo consultar/ordenar los siguientes productos:\n\n";
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  cartCount.textContent = cart.length;
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = `<p class="empty-msg">El carrito está vacío.</p>`;
+    cartTotalPrice.textContent = "$0.00";
+    return;
+  }
+
+  cartItemsContainer.innerHTML = "";
   let total = 0;
-  
-  cart.forEach(item => {
-    const nombre = getNombre(item);
-    const precio = getPrecio(item);
-    msg += `• ${nombre} - $${parseFloat(precio || 0).toFixed(2)}\n`;
-    total += parseFloat(precio || 0);
+
+  cart.forEach((product, idx) => {
+    total += product.precio;
+    const itemEl = document.createElement("div");
+    itemEl.className = "cart-item";
+    itemEl.innerHTML = `
+      <div class="cart-item-info">
+        <h4>${product.nombre}</h4>
+        <p>$${product.precio.toFixed(2)}</p>
+      </div>
+      <button class="cart-item-remove" onclick="removeFromCart(${idx})">&times;</button>
+    `;
+    cartItemsContainer.appendChild(itemEl);
   });
-  
-  msg += `\n*Total estimado: $${total.toFixed(2)}*`;
-  
-  window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+
+  cartTotalPrice.textContent = `$${total.toFixed(2)}`;
+}
+
+function consultDirect(productId) {
+  const product = allProducts.find(p => p.id === productId);
+  if (!product) return;
+
+  const msg = `Hola Power PC, me interesa obtener información sobre el producto:\n*${product.nombre}* - $${product.precio.toFixed(2)}`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+btnCheckoutWs.addEventListener("click", () => {
+  if (cart.length === 0) return;
+
+  let msg = `Hola Power PC, me gustaría realizar el siguiente pedido:\n\n`;
+  let total = 0;
+  cart.forEach((p, i) => {
+    msg += `${i + 1}. *${p.nombre}* - $${p.precio.toFixed(2)}\n`;
+    total += p.precio;
+  });
+  msg += `\n*Total a pagar:* $${total.toFixed(2)}`;
+
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
 });
 
-// Consulta directa individual
-window.directWhatsApp = (nombre, precio) => {
-  const msg = `¡Hola Power PC! 👋 Me interesa obtener más información sobre: *${nombre}* ($${parseFloat(precio || 0).toFixed(2)}).`;
-  window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-};
-
-// Control del Panel Lateral (Carrito)
 function openCart() {
-  cartSidebar.classList.add("active");
   cartOverlay.classList.add("active");
+  cartSidebar.classList.add("active");
 }
 
 function closeCart() {
-  cartSidebar.classList.remove("active");
   cartOverlay.classList.remove("active");
+  cartSidebar.classList.remove("active");
 }
 
-document.getElementById("cart-trigger").addEventListener("click", openCart);
-document.getElementById("close-cart").addEventListener("click", closeCart);
+cartTrigger.addEventListener("click", openCart);
+closeCartBtn.addEventListener("click", closeCart);
 cartOverlay.addEventListener("click", closeCart);
 
-// Filtro por Categoría Principal
-window.filterProducts = (cat) => {
-  currentFilter = cat;
-  currentSubfilter = "Todas";
-  
-  const subfilterContainer = document.getElementById("subfilter-perifericos");
-  const subcatSelect = document.getElementById("subcat-select");
-  
-  if (cleanStr(cat) === "perifericos") {
-    subfilterContainer.classList.remove("hidden");
-    if (subcatSelect) subcatSelect.value = "Todas";
-  } else {
-    subfilterContainer.classList.add("hidden");
-  }
-
-  document.querySelectorAll(".filter-bar .filter-btn").forEach(btn => {
-    btn.classList.toggle("active", cleanStr(btn.innerText) === cleanStr(cat));
-  });
-
-  renderProducts();
-};
-
-// Filtro por Subcategoría (Desplegable)
-window.filterSubcategory = (subcat) => {
-  currentSubfilter = subcat;
-  renderProducts();
-};
+document.addEventListener("DOMContentLoaded", loadProducts);
