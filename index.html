@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power PC | Tienda Digital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Encabezado con Logo y Carrito -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <img src="img/logo.png" alt="Power PC Logo" class="brand-logo" onerror="this.style.display='none'">
+        <div class="brand-text">
+          <h1>POWER <span>PC</span></h1>
+          <p>PC's y Repuestos</p>
+        </div>
+      </div>
+      <button class="cart-btn-trigger" id="cart-trigger">
+        🛒 Carrito <span id="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="catalog-section">
+      <!-- Barra de Filtros Principales -->
+      <div class="filter-bar">
+        <span>Categorías:</span>
+        <button class="filter-btn active" onclick="filterProducts('Todos')">Todos</button>
+        <button class="filter-btn" onclick="filterProducts('Laptops')">Laptops</button>
+        <button class="filter-btn" onclick="filterProducts('CPUs')">CPUs</button>
+        <button class="filter-btn" onclick="filterProducts('Monitores')">Monitores</button>
+        <button class="filter-btn" onclick="filterProducts('Periféricos')">Periféricos</button>
+        <button class="filter-btn" onclick="filterProducts('Oficina')">Oficina</button>
+        <button class="filter-btn" onclick="filterProducts('Repuestos')">Repuestos</button>
+        <button class="filter-btn" onclick="filterProducts('UPS')">UPS</button>
+        <button class="filter-btn" onclick="filterProducts('Videojuegos')">Videojuegos</button>
+      </div>
+
+      <!-- Subfiltros de Periféricos (Se ocultan/muestran automáticamente) -->
+      <!-- Subcategorías desplegables (Ocultas por defecto) -->
+<div class="subfilter-container hidden" id="subfilter-perifericos">
+  <label for="subcat-select">Subcategoría:</label>
+  <select id="subcat-select" class="subcat-dropdown" onchange="filterSubcategory(this.value)">
+    <option value="Todas">Todas las subcategorías</option>
+    <option value="Audífonos">Audífonos</option>
+    <option value="Teclados">Teclados</option>
+    <option value="Mouse">Mouse</option>
+    <option value="Bocinas">Bocinas</option>
+    <option value="Micrófonos">Micrófonos</option>
+  </select>
+</div>
+
+      <!-- Rejilla de Productos -->
+      <div id="product-grid" class="grid"></div>
+    </section>
+  </main>
+
+  <!-- Panel Lateral del Carrito -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h2>Tu Carrito</h2>
+      <button class="close-cart" id="close-cart">&times;</button>
+    </div>
+    
+    <div class="cart-items" id="cart-items"></div>
+
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cart-total-price">$0.00</span>
+      </div>
+      <button class="btn-whatsapp" id="send-whatsapp">
+        💬 Pedir por WhatsApp
+      </button>
+    </div>
+  </aside>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
