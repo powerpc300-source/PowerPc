@@ -34,18 +34,37 @@ onSnapshot(productsRef, (snapshot) => {
   renderProducts();
 });
 
-// Renderizar tarjetas de productos en pantalla
+// Función auxiliar para normalizar texto (ignora mayúsculas, tildes y espacios extras)
+function cleanText(str) {
+  if (!str) return "";
+  return str
+    .toString()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+// Renderizar tarjetas de productos en pantalla con tolerancia total a errores de tipeo en Firestore
 function renderProducts() {
   productGrid.innerHTML = "";
   
   let filtered = allProducts;
 
+  // Filtrar por Categoría Principal
   if (currentFilter !== "Todos") {
-    filtered = filtered.filter(p => p.categoria === currentFilter);
+    filtered = filtered.filter(p => {
+      const dbCategory = p.categoria || p.categoría || p.Categoria || "";
+      return cleanText(dbCategory) === cleanText(currentFilter);
+    });
   }
 
-  if (currentFilter === "Periféricos" && currentSubfilter !== "Todas") {
-    filtered = filtered.filter(p => p.subcategoria === currentSubfilter);
+  // Filtrar por Subcategoría (si aplica)
+  if (cleanText(currentFilter) === "perifericos" && currentSubfilter !== "Todas") {
+    filtered = filtered.filter(p => {
+      const dbSubcategory = p.subcategoria || p.Subcategoría || p.subcategoria || p.Subcategoria || "";
+      return cleanText(dbSubcategory) === cleanText(currentSubfilter);
+    });
   }
 
   if (filtered.length === 0) {
@@ -57,15 +76,18 @@ function renderProducts() {
     const card = document.createElement("div");
     card.className = "card";
     
-    const badgeText = p.subcategoria ? `${p.categoria} • ${p.subcategoria}` : p.categoria;
+    const catText = p.categoria || p.categoría || p.Categoria || "";
+    const subText = p.subcategoria || p.Subcategoría || p.subcategoria || p.Subcategoria || "";
+    const badgeText = subText ? `${catText} • ${subText}` : catText;
+    const imgUrl = p.imagen || p.Imagen || p.img || "";
 
     card.innerHTML = `
-      <img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://via.placeholder.com/300x200?text=Power+PC'">
+      <img src="${imgUrl}" alt="${p.nombre || 'Producto'}" onerror="this.src='https://via.placeholder.com/300x200?text=Power+PC'">
       <div class="card-body">
         <span class="badge">${badgeText}</span>
-        <h3 class="card-title">${p.nombre}</h3>
-        <p class="price">$${parseFloat(p.precio).toFixed(2)}</p>
-        <p class="card-desc">${p.descripcion || ''}</p>
+        <h3 class="card-title">${p.nombre || 'Sin nombre'}</h3>
+        <p class="price">$${parseFloat(p.precio || 0).toFixed(2)}</p>
+        <p class="card-desc">${p.descripcion || p.Descripción || ''}</p>
         <div class="card-actions">
           <button class="btn-add-cart" onclick="addToCart('${p.id}')">🛒 Agregar</button>
           <button class="btn-direct-ws" onclick="directWhatsApp('${p.nombre}', ${p.precio})">💬 Consultar</button>
@@ -97,13 +119,13 @@ function updateCartUI() {
   
   let total = 0;
   cart.forEach((item, index) => {
-    total += parseFloat(item.precio);
+    total += parseFloat(item.precio || 0);
     const div = document.createElement("div");
     div.className = "cart-item";
     div.innerHTML = `
       <div>
         <div class="cart-item-title">${item.nombre}</div>
-        <div class="cart-item-price">$${parseFloat(item.precio).toFixed(2)}</div>
+        <div class="cart-item-price">$${parseFloat(item.precio || 0).toFixed(2)}</div>
       </div>
       <button style="background:none; border:none; color:#ef4444; cursor:pointer;" onclick="removeFromCart(${index})">✕</button>
     `;
@@ -121,8 +143,8 @@ document.getElementById("send-whatsapp").addEventListener("click", () => {
   let total = 0;
   
   cart.forEach(item => {
-    msg += `• ${item.nombre} - $${parseFloat(item.precio).toFixed(2)}\n`;
-    total += parseFloat(item.precio);
+    msg += `• ${item.nombre} - $${parseFloat(item.precio || 0).toFixed(2)}\n`;
+    total += parseFloat(item.precio || 0);
   });
   
   msg += `\n*Total estimado: $${total.toFixed(2)}*`;
@@ -132,11 +154,11 @@ document.getElementById("send-whatsapp").addEventListener("click", () => {
 
 // Consulta directa individual
 window.directWhatsApp = (nombre, precio) => {
-  const msg = `¡Hola Power PC! 👋 Me interesa obtener más información sobre: *${nombre}* ($${parseFloat(precio).toFixed(2)}).`;
+  const msg = `¡Hola Power PC! 👋 Me interesa obtener más información sobre: *${nombre}* ($${parseFloat(precio || 0).toFixed(2)}).`;
   window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
-// Control del Panel Lateral
+// Control del Panel Lateral (Carrito)
 function openCart() {
   cartSidebar.classList.add("active");
   cartOverlay.classList.add("active");
@@ -159,7 +181,7 @@ window.filterProducts = (cat) => {
   const subfilterContainer = document.getElementById("subfilter-perifericos");
   const subcatSelect = document.getElementById("subcat-select");
   
-  if (cat === "Periféricos") {
+  if (cleanText(cat) === "perifericos") {
     subfilterContainer.classList.remove("hidden");
     if (subcatSelect) subcatSelect.value = "Todas";
   } else {
@@ -167,7 +189,7 @@ window.filterProducts = (cat) => {
   }
 
   document.querySelectorAll(".filter-bar .filter-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.innerText === cat);
+    btn.classList.toggle("active", cleanText(btn.innerText) === cleanText(cat));
   });
 
   renderProducts();
